@@ -142,10 +142,42 @@ function getAllSuppliers(callback){
   });
 }
 
+function insertCustomer(customer, callback){
+  const {lastname, firstname, address, email, contact} = customer;
+
+  const insertQuery = `INSERT INTO Customer(lastname, firstname, address, email, contact_info) VALUES (?,?,?,?,?)`;
+
+  db.run(insertQuery, [lastname, firstname, address, email, contact], function(err){
+    if(err){
+      console.error('Error in Adding Customer: ', err.message);
+    }
+    else{
+      console.log(`Customer Added: ${this.lastID}`);
+      callback(null, this.lastID);
+    }
+  });
+}
+
+function getAllCustomer(callback){
+  const query = 'SELECT * FROM Customer';
+
+  db.all(query, (err, rows) => {
+    if(err){
+      console.error('Error in Retrieving Customer: ', err.message);
+      callback(err, []);
+    }
+    else{
+      callback(null, rows);
+    }
+  });
+}
+
 module.exports = {
   insertProduct,
   getAllProducts,
   insertSupplier,
   getAllSuppliers,
+  insertCustomer,
+  getAllCustomer,
   createTables
 };
